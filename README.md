@@ -1,73 +1,165 @@
-# React + TypeScript + Vite
+# instagram-recruit-tool（RecruitGram）
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> 🔰 **はじめてこのリポジトリを触る方へ** — 「[動かし方](#動かし方)」の節を上から順に進めれば、自分の PC で起動できます。
+> いまどこまでできているかは「[作者と今の状態](#作者と今の状態)」を見てください。
 
-Currently, two official plugins are available:
+採用向けの Instagram 投稿を AI で作り、予約・カレンダー管理し、トレンドを確認できるツールです。<!-- 要確認：作者に聞く（誰向けか） -->
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+> ⚠️ **現在はモック（見本）版です。** 本物の Instagram・AI にはつながっていません。AI の生成結果・トレンド・投稿はすべて、コードに用意した見本データで動きを再現しています（詳しくは「[アーキテクチャ](#アーキテクチャ)」）。
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 概要
 
-## Expanding the ESLint configuration
+### 解決したい課題
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- <!-- 要確認：作者に聞く -->
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 想定ユーザー
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+<!-- 要確認：作者に聞く（誰が・どの業務で使うか） -->
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### できること（画面）
+
+| 画面 | できること |
+|---|---|
+| 投稿カレンダー | 予約済み・投稿済みの投稿をカレンダーで確認する |
+| 新規AI投稿 | AI が採用向けのキャプションと画像テーマを提案 → 内容を編集 → 日時を決めて予約する |
+| トレンドレポート | コンテンツのトレンド・最適な投稿時間・投稿のヒントを確認する |
+| デモコントロール | モックの「今日の日付」を 1 日進める（予約日を過ぎた投稿が「投稿済み」に変わる）、トレンドを切り替える |
+
+---
+
+## 作者と今の状態
+
+| 項目 | 内容 |
+|---|---|
+| 作者・窓口 | <!-- 要確認：作者に聞く --> |
+| 今どこまでできているか | <!-- 要確認：作者に聞く --> |
+| 次にやること | <!-- 要確認：作者に聞く --> |
+| 既知の問題 | <!-- 要確認：作者に聞く --> |
+
+---
+
+## 動かし方
+
+### 前提（先に用意するもの）
+
+- **GitHub**：このリポジトリを閲覧できる権限
+- **Node.js**：20.19 以上、または 22.12 以上（使っている Vite 8 の要件です）
+
+ログインや API キーなどの設定は、今のモック版では不要です。
+
+### 手順
+
+1. リポジトリを手元にコピーする（clone）
+
+   ```bash
+   git clone https://github.com/nakanok-demo/instagram-recruit-tool.git
+   cd instagram-recruit-tool
+   ```
+
+2. 必要な部品をインストールする
+
+   ```bash
+   npm install
+   ```
+
+3. 起動する
+
+   ```bash
+   npm run dev
+   ```
+
+   画面に表示されたアドレス（通常は `http://localhost:5173`）をブラウザで開きます。
+
+### そのほかのコマンド
+
+| コマンド | 何をするか |
+|---|---|
+| `npm run build` | 型チェックをしてから、公開用のファイルを `dist/` に作る |
+| `npm run preview` | `build` で作ったファイルを手元で確認する |
+| `npm run lint` | ESLint（書き方のチェックツール）でコードを点検する |
+
+### 必要な設定
+
+今のモック版では、環境変数（API キーなどの設定値）は使っていません。
+
+### 注意点
+
+- **データはブラウザの中（localStorage）にだけ保存されます。** 別のブラウザや別の PC では見えません。データを最初の状態に戻したいときは、ブラウザの開発者ツールで localStorage の `recruit_gram_v1` を削除してください
+- **「デモコントロール」の日付は本物の日付ではありません。** 予約投稿が「投稿済み」になるのは、デモコントロールで日付を進めたときです
+
+---
+
+## 秘密情報の扱い（大事）
+
+今は秘密情報を使っていませんが、本物の Instagram（Graph API）や AI につなぐときは次を守ってください。
+
+- API キー・アクセストークンは **サーバー側にだけ** 置く。ブラウザで動くコード（`src/` の React）には置かない。Vite の `VITE_` 付き変数は誰でも見られる
+- 設定ファイル本体（`.env` など）は `.gitignore` に入れてある（= Git に記録されない）。代わりに、名前だけを書いた `.env.example` を Git に入れる
+- 公開・デプロイの前は `/secure`（公開前の安全チェック）を通す
+
+---
+
+## 技術スタック
+
+- **フロントエンド**：React 19 + TypeScript + Vite
+- **スタイル**：Tailwind CSS
+- **アイコン**：lucide-react
+- **日付の計算・表示**：date-fns
+- **データの保存**：ブラウザの localStorage（サーバー・データベースはなし）
+
+---
+
+## アーキテクチャ
+
+ブラウザだけで完結しています。外部との通信はありません。
+
+```
+ブラウザ（React）
+  ├─ 画面（src/components/）
+  │     │  操作
+  │     ▼
+  ├─ 状態の管理（src/context/AppContext.tsx）
+  │     ├─ 変更のたびに localStorage へ保存（src/utils/storage.ts）
+  │     └─ 起動時に localStorage から復元
+  │
+  └─ モック API（src/services/apiMock.ts）  ※ 本物の API の代わり
+        ├─ generateAIPost()     … AI 投稿の生成（見本のキャプションから選ぶ）
+        ├─ fetchTrendReport()   … トレンドレポートの取得（見本データを返す）
+        └─ submitToInstagram()  … Instagram への投稿予約（成功したことにする）
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+本物の API につなぐときは、`src/services/apiMock.ts` の 3 つの関数の中身を差し替える想定です（ファイル冒頭のコメントより）。
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## ディレクトリ構成
+
 ```
+instagram-recruit-tool/
+├── README.md               # 技術仕様と引き継ぎの入口（このファイル）
+├── index.html              # 画面の入口となる HTML
+├── public/                 # そのまま配信するファイル（favicon など）
+└── src/
+    ├── main.tsx            # React の起動
+    ├── App.tsx             # 画面の切り替え・全体レイアウト
+    ├── components/
+    │   ├── calendar/       # 投稿カレンダー
+    │   ├── post/           # 新規AI投稿
+    │   ├── trends/         # トレンドレポート
+    │   ├── demo/           # デモコントロール
+    │   ├── layout/         # サイドバー・スマホ用の下部タブ
+    │   └── common/         # 共通部品（ダミー画像・状態バッジ）
+    ├── context/            # アプリ全体の状態（投稿・トレンド・モック日付）
+    ├── services/           # モック API（本物の API に差し替える場所）
+    ├── types/              # 型の定義
+    └── utils/              # localStorage への保存・読み込み
+```
+
+---
+
+## テスト
+
+自動テストはまだありません。
